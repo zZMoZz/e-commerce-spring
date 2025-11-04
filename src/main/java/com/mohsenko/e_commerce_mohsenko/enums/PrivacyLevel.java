@@ -1,4 +1,8 @@
 package com.mohsenko.e_commerce_mohsenko.enums;
 
 public enum PrivacyLevel {
+    CUSTOMER,
+    MODERATOR,
+    ADMIN
 }
+

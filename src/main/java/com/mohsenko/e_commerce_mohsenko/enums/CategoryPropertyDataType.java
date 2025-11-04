@@ -1,4 +1,8 @@
 package com.mohsenko.e_commerce_mohsenko.enums;
 
-public class CategoryPropertyDataType {
+public enum CategoryPropertyDataType {
+    STRING,
+    INTEGER,
+    DECIMAL,
+    BOOLEAN
 }
