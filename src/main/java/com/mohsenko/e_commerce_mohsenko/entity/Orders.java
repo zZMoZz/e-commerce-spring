@@ -6,9 +6,11 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
+
 @Entity
 @Table(name = "orders")
-@Getter @Setter @ToString
+@Getter @Setter
+@ToString(exclude = {"status", "customer", "address", "coupon", "shippingPartner"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class Orders extends BaseEntity {
@@ -41,11 +43,11 @@ public class Orders extends BaseEntity {
     @Column(name = "order_delivered_at")
     private OffsetDateTime orderDeliveredAt;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "status_id", referencedColumnName = "id", nullable = false)
     private OrderStatus status;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
     private Customer customer;
 
@@ -53,11 +55,11 @@ public class Orders extends BaseEntity {
     @JoinColumn(name = "address_id", referencedColumnName = "id", nullable = false)
     private OrderAddressSnapshot address;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_id", referencedColumnName = "id")
     private Coupon coupon;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "shipping_partner_id", referencedColumnName = "id", nullable = false)
     private ShippingPartner shippingPartner;
 }

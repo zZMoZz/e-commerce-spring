@@ -7,7 +7,8 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "order_return")
-@Getter @Setter @ToString
+@Getter @Setter
+@ToString(exclude = {"order", "orderItem", "orderReturnStatus"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderReturn extends BaseEntity {
@@ -31,7 +32,7 @@ public class OrderReturn extends BaseEntity {
     @JoinColumn(name = "order_item_id", referencedColumnName = "id")
     private OrderItem orderItem;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "status", referencedColumnName = "id", nullable = false)
     private OrderReturnStatus orderReturnStatus;
 }

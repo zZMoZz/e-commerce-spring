@@ -9,7 +9,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "customer")
-@Getter @Setter @ToString
+@Getter @Setter
+@ToString(exclude = {"customerAddresses"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class Customer extends BaseEntity {

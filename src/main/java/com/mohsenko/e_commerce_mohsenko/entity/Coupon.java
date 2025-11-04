@@ -24,6 +24,7 @@ public class Coupon extends BaseEntity {
     @Column(name = "description", length = 1000)
     private String description;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "discount_type", nullable = false)
     private DiscountType discountType = DiscountType.AMOUNT;
 

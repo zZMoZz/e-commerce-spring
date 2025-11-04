@@ -5,7 +5,8 @@ import lombok.*;
 
 @Entity
 @Table(name = "category_property_value")
-@Getter @Setter @ToString
+@Getter @Setter
+@ToString(exclude = {"categoryProperties"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryPropertyValue extends BaseEntity {

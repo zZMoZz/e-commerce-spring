@@ -3,11 +3,10 @@ package com.mohsenko.e_commerce_mohsenko.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.awt.*;
-
 @Entity
 @Table(name = "customer_address")
-@Getter @Setter @ToString
+@Getter @Setter
+@ToString(exclude = {"customer"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomerAddress extends BaseEntity {

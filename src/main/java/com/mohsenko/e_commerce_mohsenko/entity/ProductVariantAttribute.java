@@ -5,7 +5,8 @@ import lombok.*;
 
 @Entity
 @Table(name = "product_variant_attribute")
-@Getter @Setter @ToString
+@Getter @Setter
+@ToString(exclude = {"productVariant", "categoryProperties", "categoryPropertyValue"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductVariantAttribute extends BaseEntity {

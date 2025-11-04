@@ -7,7 +7,8 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "product_review")
-@Getter @Setter @ToString
+@Getter @Setter
+@ToString(exclude = {"customer", "product"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductReview extends BaseEntity {

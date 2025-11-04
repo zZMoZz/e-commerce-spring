@@ -7,7 +7,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "product_tag")
-@Getter @Setter @ToString
+@Getter @Setter
+@ToString(exclude = {"products"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductTag extends BaseEntity {

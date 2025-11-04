@@ -5,11 +5,13 @@ import com.mohsenko.e_commerce_mohsenko.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "refund_transaction")
-@Getter @Setter @ToString
+@Getter @Setter
+@ToString(exclude = {"order", "orderReturn"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class RefundTransaction extends BaseEntity {
@@ -19,7 +21,7 @@ public class RefundTransaction extends BaseEntity {
     private Long id;
 
     @Column(name = "refund_amount", precision = 10, scale = 2, nullable = false)
-    private Double refundAmount;
+    private BigDecimal refundAmount;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "method", nullable = false)

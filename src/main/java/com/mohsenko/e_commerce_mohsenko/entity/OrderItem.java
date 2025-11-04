@@ -5,7 +5,8 @@ import lombok.*;
 
 @Entity
 @Table(name = "order_item")
-@Getter @Setter @ToString
+@Getter @Setter
+@ToString(exclude = {"order", "variant"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderItem extends BaseEntity {

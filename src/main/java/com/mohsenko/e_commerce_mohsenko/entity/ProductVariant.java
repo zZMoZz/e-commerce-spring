@@ -8,7 +8,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "product_variant")
-@Getter @Setter @ToString
+@Getter @Setter
+@ToString(exclude = {"product", "productVariantAttributes"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductVariant extends BaseEntity {

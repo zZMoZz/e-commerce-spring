@@ -7,7 +7,8 @@ import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "coupon_usage")
-@Getter @Setter @ToString
+@Getter @Setter
+@ToString(exclude = {"coupon", "customer"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class CouponUsage extends BaseEntity {

@@ -6,7 +6,8 @@ import lombok.*;
 
 @Entity
 @Table(name = "cart")
-@Getter @Setter @ToString
+@Getter @Setter
+@ToString(exclude = {"customer"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class Cart extends BaseEntity {

@@ -10,7 +10,8 @@ import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "payment")
-@Getter @Setter @ToString
+@Getter @Setter
+@ToString(exclude = {"order"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class Payment extends BaseEntity {

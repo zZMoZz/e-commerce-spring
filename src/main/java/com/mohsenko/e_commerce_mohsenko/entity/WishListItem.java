@@ -5,7 +5,8 @@ import lombok.*;
 
 @Entity
 @Table(name = "wish_list_item")
-@Getter @Setter @ToString
+@Getter @Setter
+@ToString(exclude = {"wishList", "product"})
 @NoArgsConstructor
 @AllArgsConstructor
 public class WishListItem {
