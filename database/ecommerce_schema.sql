@@ -1,11 +1,11 @@
 CREATE TYPE gender_type AS ENUM ('male', 'female');
 CREATE TABLE customer (
     id BIGSERIAL PRIMARY KEY,
-    username VARCHAR(100) UNIQUE NOT NULL,
+    username VARCHAR(150) UNIQUE NOT NULL,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    phone_number VARCHAR(20) UNIQUE,
+    email VARCHAR(255) UNIQUE NOT NULL CHECK (email ~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'),
+    phone_number VARCHAR(20) UNIQUE CHECK (phone_number ~ '^[0-9]+$'),
     gender gender_type,
     email_verified_at TIMESTAMPTZ,
     last_login_at TIMESTAMPTZ,
@@ -20,7 +20,7 @@ CREATE TABLE customer_address (
     customer_id BIGINT NOT NULL,
     full_name VARCHAR(255) NOT NULL,
     phone VARCHAR(20) NOT NULL CHECK (phone ~ '^[0-9]+$'),
-    phone_backup VARCHAR(11) CHECK (phone_backup ~ '^[0-9]+$'),
+    phone_backup VARCHAR(20) CHECK (phone_backup ~ '^[0-9]+$'),
     country VARCHAR(100) NOT NULL,
     city VARCHAR(100) NOT NULL,
     street VARCHAR(255) NOT NULL, 
@@ -125,6 +125,7 @@ CREATE TABLE product_specification (
     product_id BIGINT NOT NULL,
     category_properties_id INTEGER,
     value_id INTEGER,
+    property_text VARCHAR(255),
     value_text VARCHAR(255),
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ,
@@ -139,6 +140,7 @@ CREATE TABLE product_variant_attribute (
     variant_id BIGINT NOT NULL,
     category_properties_id INTEGER,
     value_id INTEGER,
+    property_text VARCHAR(255),
     value_text VARCHAR(255),
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ,
@@ -267,9 +269,9 @@ CREATE TABLE coupon_usage (
 );
 
 CREATE TABLE shipping_partner (
-    id SMALLINT PRIMARY KEY,
+    id SMALLSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
-    phone VARCHAR(11) NOT NULL CHECK (phone ~ '^[0-9]+$'),
+    phone VARCHAR(20) NOT NULL CHECK (phone ~ '^[0-9]+$'),
     website VARCHAR(255) NOT NULL UNIQUE,
     is_active BOOLEAN NOT NULL DEFAULT FALSE,
     is_default BOOLEAN NOT NULL DEFAULT FALSE,
@@ -281,7 +283,7 @@ CREATE TABLE order_address_snapshot (
     id BIGSERIAL PRIMARY KEY,
     full_name VARCHAR(255) NOT NULL,
     phone VARCHAR(20) NOT NULL CHECK (phone ~ '^[0-9]+$'),
-    phone_backup VARCHAR(11) CHECK (phone_backup ~ '^[0-9]+$'),
+    phone_backup VARCHAR(20) CHECK (phone_backup ~ '^[0-9]+$'),
     country VARCHAR(100) NOT NULL,
     city VARCHAR(100) NOT NULL,
     street VARCHAR(255) NOT NULL, 
@@ -364,20 +366,20 @@ CREATE TABLE order_return (
     CONSTRAINT fk_order_return_order_return_status FOREIGN KEY (status) REFERENCES order_return_status (id)
 );
 
-CREATE TYPE payment_method AS ENUM ('CARD', 'COD');
+CREATE TYPE payment_method AS ENUM ('CARD', 'CASH');
 CREATE TYPE payment_status AS ENUM ('pending', 'paid', 'failed', 'refunded');
 CREATE TABLE payment (
     id BIGSERIAL PRIMARY KEY,
     order_id BIGINT NOT NULL,
     method payment_method NOT NULL,
     status payment_status NOT NULL DEFAULT 'pending',
-    transaction_id VARCHAR(255),
+    transaction_id VARCHAR(255) UNIQUE,
     amount DECIMAL(10, 2) NOT NULL CHECK (amount >= 0),
     paid_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ,
     CONSTRAINT fk_payment_order FOREIGN KEY (order_id) REFERENCES orders (id) ON DELETE CASCADE,
-    CHECK (method = 'COD' OR transaction_id IS NOT NULL)
+    CHECK (method = 'CASH' OR transaction_id IS NOT NULL)
 );
 
 CREATE TABLE refund_transaction (
@@ -387,7 +389,7 @@ CREATE TABLE refund_transaction (
     refund_amount DECIMAL(10, 2) NOT NULL CHECK (refund_amount >= 0),
     method payment_method NOT NULL,
     status payment_status NOT NULL DEFAULT 'pending',
-    transaction_id VARCHAR(255),
+    transaction_id VARCHAR(255) UNIQUE,
     paid_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ,
