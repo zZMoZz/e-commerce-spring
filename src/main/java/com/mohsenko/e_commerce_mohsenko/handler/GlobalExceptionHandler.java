@@ -3,6 +3,7 @@ package com.mohsenko.e_commerce_mohsenko.handler;
 import com.mohsenko.e_commerce_mohsenko.dto.error.ErrorResponse;
 import com.mohsenko.e_commerce_mohsenko.exception.BaseException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,20 +36,36 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(ex.getStatus()).body(response);
     }
 
-    // handle all exceptions from validation annotations
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
+    // handle validation errors
+    @ExceptionHandler({MethodArgumentNotValidException.class, ConstraintViolationException.class})
+    public ResponseEntity<ErrorResponse> handleValidationException(Exception ex, HttpServletRequest request) {
         // fetch all errors from the exception and map them to ValidationError object
-        List<ErrorResponse.ValidationError> validationErrors = ex.getBindingResult().getAllErrors().stream()
-                .map(error -> ErrorResponse.ValidationError.builder()
-                        .field(((FieldError) error).getField())
-                        .message(error.getDefaultMessage())
-                        .build())
-                .toList();
+        List<ErrorResponse.ValidationError> validationErrors = null;
+
+        // Case 1: @Valid @RequestBody DTO errors
+        if (ex instanceof MethodArgumentNotValidException manve) {
+            validationErrors = manve.getBindingResult().getAllErrors().stream()
+                    .map(error -> ErrorResponse.ValidationError.builder()
+                            .field(((FieldError) error).getField())
+                            .message(error.getDefaultMessage())
+                            .build())
+                    .toList();
+        }
+
+        // Case 2: @RequestParam / @PathVariable / method parameter validation errors
+        if (ex instanceof ConstraintViolationException cve) {
+            validationErrors = cve.getConstraintViolations().stream()
+                    .map(error -> ErrorResponse.ValidationError.builder()
+                            .field(error.getPropertyPath().toString().replaceFirst("^[^.]*\\.", ""))
+                            .message(error.getMessage())
+                            .build())
+                    .toList();
+        }
 
         // create an ErrorResponse object and return it
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(OffsetDateTime.now())
+                .message("Validation error")
                 .status(HttpStatus.BAD_REQUEST.value())
                 .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .path(request.getRequestURI())
@@ -86,7 +103,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
 
-    // handle malformed JSON requests
+    // handle malformed JSON requests (It is thrown when Spring cannot read or parse HTTP request body.)
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, HttpServletRequest request) {
         String message = (ex.getMessage().contains("Required request body is missing")) ?
