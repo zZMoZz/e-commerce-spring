@@ -3,6 +3,8 @@ package com.mohsenko.e_commerce_mohsenko.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "order_item")
 @Getter @Setter
@@ -19,7 +21,7 @@ public class OrderItem extends BaseEntity {
     private Integer quantity;
 
     @Column(name = "unit_price", precision = 10, scale = 2, nullable = false)
-    private Double unitPrice;
+    private BigDecimal unitPrice;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "order_id", referencedColumnName = "id", nullable = false)
