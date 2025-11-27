@@ -111,6 +111,7 @@ CREATE TABLE product (
 CREATE TABLE product_variant (
     id BIGSERIAL PRIMARY KEY,
     product_id BIGINT NOT NULL,
+    title VARCHAR(200) NOT NULL,
     price NUMERIC(10,2) NOT NULL CHECK (price >= 0),
     quantity INTEGER NOT NULL DEFAULT 0 CHECK (quantity >= 0),
     is_active BOOLEAN NOT NULL DEFAULT FALSE,
@@ -171,7 +172,6 @@ CREATE TABLE product_review (
     title VARCHAR(255),
     comment TEXT,
     verified_purchase BOOLEAN NOT NULL DEFAULT FALSE,
-    likes_count INTEGER NOT NULL DEFAULT 0 CHECK (likes_count >= 0),
     customer_id BIGINT NOT NULL,
     product_id BIGINT NOT NULL,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
